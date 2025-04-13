@@ -3,8 +3,13 @@
 {% block body %}
 <div>
     {% if messages|length > 0 %}
-        {% for message in messages|slice(0, limit) %}
-            <div>{{message}}</div>
+        {% for key, message in messages|slice(0, limit) %}
+            <div>
+                <a href="{{path('app_show_one', {id: key})}}">{{message.message}}</a>
+            </div>
+            <div style="grey;">
+                {{ include('/hello/_message.html.twig', {message: message})}}
+            </div>
         {% endfor %}
     {% else %}
         <div>There is nothing yet!</div>
