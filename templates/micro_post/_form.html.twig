@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.title, 'Please enter the title')}}
+    </div>
+    <div>
+        {{ form_widget(form.title, {'attr' : {'style': 'color: gray'}})}}
+    </div>
+    <div>
+        {{ form_label(form.text, 'Please enter the text')}}
+    </div>
+    <div>
+        {{ form_widget(form.text) }}
+    </div>
+    {{ form_row(form.submit, { 'label': 'Wyślij' }) }}
+{{ form_end(form) }}
