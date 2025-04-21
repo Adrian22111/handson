@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\MicroPost;
+use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,20 +34,15 @@ final class MicroPostController extends AbstractController
     #[Route('micro-post/add', name: 'app_micro_post_add', priority: 2)]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $microPost = new MicroPost();
-        $form = $this->createFormBuilder($microPost)
-            ->add('title')
-            ->add('text')
-            ->add('submit', SubmitType::class, ['label' => 'zapisz'])
-            ->getForm();
+        $form = $this->createForm(MicroPostType::class, new MicroPost);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $microPost = $form->getData();
-            $microPost->setCreated(new DateTime());
+            $post = $form->getData();
+            $post->setCreated(new DateTime());
 
-            $entityManager->persist($microPost);
+            $entityManager->persist($post);
             $entityManager->flush();
 
             $this->addFlash('success', 'Your micropost has been added');
@@ -65,11 +61,7 @@ final class MicroPostController extends AbstractController
     #[Route('micro-post/{post<\d+>}/edit', name: 'app_micro_post_edit', priority: 2)]
     public function edit(MicroPost $post, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createFormBuilder($post)
-            ->add('title')
-            ->add('text')
-            ->add('submit', SubmitType::class, ['label' => 'zapisz'])
-            ->getForm();
+        $form = $this->createForm(MicroPostType::class, $post);
 
         $form->handleRequest($request);
 
