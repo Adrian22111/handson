@@ -71,13 +71,13 @@ final class MicroPostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Your micropost has been edited');
+            $this->addFlash('success', 'Your micropost has beqen edited');
 
             return $this->redirectToRoute('app_micro_post');
         }
 
         return $this->render(
-            'micro_post/add.html.twig',
+            'micro_post/edit.html.twig',
             [
                 'form' => $form,
             ]

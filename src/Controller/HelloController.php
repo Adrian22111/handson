@@ -35,6 +35,5 @@ class HelloController extends AbstractController
                 'message' => $this->messages[$id]
             ]
         );
-        // return new Response($this->messages[$id]);
     }
 }
