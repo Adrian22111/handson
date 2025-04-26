@@ -2,9 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use DateTime;
+use App\Entity\Comment;
+use App\Entity\MicroPost;
+use App\Repository\MicroPostRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HelloController extends AbstractController
 {
@@ -15,8 +20,25 @@ class HelloController extends AbstractController
     ];
 
     #[Route('/{limit<\d+>?3}', name: 'app_index')]
-    public function index(int $limit): Response
+    public function index(int $limit, EntityManagerInterface $entityManager, MicroPostRepository $posts): Response
     {
+        // $post = new MicroPost();
+        // $post->setTitle('Hello');
+        // $post->setText('Hello');
+        // $post->setCreated(new DateTime());
+
+        // $comment = new Comment();
+        // $comment->setText('Hello');
+
+        $post = $posts->find(14);
+        $post->getComments()->count();
+        // $comment->setPost($post);
+
+        // $entityManager->persist($post);
+        // $entityManager->persist($comment);
+        // $entityManager->flush();
+
+
         return $this->render(
             '/hello/index.html.twig',
             [
