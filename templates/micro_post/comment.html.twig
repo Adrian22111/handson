@@ -2,8 +2,8 @@
 {% block title %}Post - Add Comment{% endblock %}
 
 {% block bread %}
-→ Post Comment
-{% endblock %}
+<a href="{{ path('app_micro_post_show', {post: post.id}) }}">→ Post</a> →Comment
+{% endblock %} 
 
 {% block body %}
 {{ include('micro_post/_post.html.twig', {post: post}) }}

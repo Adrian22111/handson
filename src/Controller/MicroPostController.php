@@ -21,7 +21,7 @@ final class MicroPostController extends AbstractController
     public function index(MicroPostRepository $posts, EntityManagerInterface $entityManager): Response
     {
         return $this->render('micro_post/index.html.twig', [
-            'posts' => $posts->findAll()
+            'posts' => $posts->findAllWithComments()
         ]);
     }
 
@@ -82,6 +82,7 @@ final class MicroPostController extends AbstractController
             'micro_post/edit.html.twig',
             [
                 'form' => $form,
+                'post' => $post
             ]
         );
     }
