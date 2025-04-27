@@ -30,8 +30,8 @@ class HelloController extends AbstractController
         // $comment = new Comment();
         // $comment->setText('Hello');
 
-        $post = $posts->find(14);
-        $post->getComments()->count();
+        // $post = $posts->find(14);
+        // $post->getComments()->count();
         // $comment->setPost($post);
 
         // $entityManager->persist($post);
