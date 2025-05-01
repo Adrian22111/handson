@@ -12,11 +12,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
 final class MicroPostController extends AbstractController
 {
     #[Route('/micro-post', name: 'app_micro_post')]
@@ -28,6 +27,7 @@ final class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/{post<\d+>}', name: 'app_micro_post_show')]
+    #[IsGranted(MicroPost::VIEW, 'post')]
     public function showOne(MicroPost $post): Response
     {
         return $this->render('micro_post/show.html.twig', [
@@ -35,7 +35,6 @@ final class MicroPostController extends AbstractController
         ]);
     }
 
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('micro-post/add', name: 'app_micro_post_add', priority: 2)]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -45,6 +44,7 @@ final class MicroPostController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
+            $post->setCreated(new DateTime());
             $post->setAuthor($this->getUser());
 
             $entityManager->persist($post);
@@ -63,8 +63,8 @@ final class MicroPostController extends AbstractController
         );
     }
 
-    #[IsGranted('ROLE_EDITOR')]
     #[Route('micro-post/{post<\d+>}/edit', name: 'app_micro_post_edit', priority: 2)]
+    #[IsGranted(MicroPost::EDIT, 'post')]
     public function edit(MicroPost $post, Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MicroPostType::class, $post);
@@ -91,7 +91,6 @@ final class MicroPostController extends AbstractController
         );
     }
 
-    #[IsGranted('ROLE_COMMENTER')]
     #[Route('micro-post/{post<\d+>}/comment', name: 'app_micro_post_comment', priority: 2)]
     public function addComment(MicroPost $post, Request $request, EntityManagerInterface $entityManager): Response
     {
