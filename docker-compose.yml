@@ -12,15 +12,26 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - 3306:3306
+    networks:
+      - basic
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - basic
 
   mailer:
     image: schickling/mailcatcher
+    container_name: mailer
     ports:
       - 1025:1025
       - 1080:1080
+    networks:
+      - basic
+
+networks:
+  basic:
+    driver: bridge
