@@ -25,13 +25,13 @@ class HelloController extends AbstractController
     #[Route('/{limit<\d+>?3}', name: 'app_index')]
     public function index(int $limit, EntityManagerInterface $entityManager, MicroPostRepository $posts, MailerInterface $mailer): Response
     {
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('you@example.com')
-            ->subject('Test mail')
-            ->text('Sending mails is fun!');
+        // $email = (new Email())
+        //     ->from('hello@example.com')
+        //     ->to('you@example.com')
+        //     ->subject('Test mail')
+        //     ->text('Sending mails is fun!');
 
-        $mailer->send($email);
+        // $mailer->send($email);
         // $post = new MicroPost();
         // $post->setTitle('Hello');
         // $post->setText('Hello');
