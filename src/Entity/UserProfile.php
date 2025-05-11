@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\UserProfileRepository;
+use DateTime;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserProfileRepository;
 
 #[ORM\Entity(repositoryClass: UserProfileRepository::class)]
 class UserProfile
@@ -31,8 +33,8 @@ class UserProfile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $location = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $dateOfBirth = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\OneToOne(inversedBy: 'userProfile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -115,12 +117,12 @@ class UserProfile
         return $this;
     }
 
-    public function getDateOfBirth(): ?string
+    public function getDateOfBirth(): ?\DateTimeInterface
     {
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(?string $dateOfBirth): static
+    public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): static
     {
         $this->dateOfBirth = $dateOfBirth;
 
