@@ -42,10 +42,9 @@
 			{% endif %}
 		</div>
 		<div class="ml-16 text-2xl">
-			{{ include('follower/_follow_button.html.twig', {userToFollow: user.id}) }}
+			{{ include('follower/_follow_button.html.twig', {userToFollow: user}) }}
 		</div>
 	</div>
 
-	<div class="mb-8"></div>
 	{{ include ('micro_post/_post_list.html.twig', { posts: user.posts }) }}
 {% endblock %}
