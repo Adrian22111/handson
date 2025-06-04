@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\MicroPost;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,11 +45,59 @@ class MicroPostRepository extends ServiceEntityRepository
 
     public function findAllWithComments(): array
     {
-        return $this->createQueryBuilder('p')
-            ->addSelect('c')
-            ->leftJoin('p.comments', 'c')
-            ->orderBy('p.created', 'DESC')
-            ->getQuery()
-            ->getResult();
+        return $this->findAllQuery(
+            withComments: true
+        )->getQuery()->getResult();
+        
+        // return $this->createQueryBuilder('p')
+        //     ->addSelect('c')
+        //     ->leftJoin('p.comments', 'c')
+        //     ->orderBy('p.created', 'DESC')
+        //     ->getQuery()
+        //     ->getResult();
+    }
+
+    public function findAllByAuthor(
+        int | User $author
+    ): array
+    {
+        return $this->findAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true,
+        )->where('p.author = :author')
+        ->setParameter(
+            'author',
+            $author instanceof User ? $author->getId() : $author
+        )->getQuery()->getResult();
+    }
+
+    private function findAllQuery(
+        bool $withComments = false,
+        bool $withLikes = false,
+        bool $withAuthors = false,
+        bool $withProfiles = false,
+    ) : QueryBuilder 
+    {
+        $query = $this->createQueryBuilder('p');
+        if($withComments == true){
+            $query->leftJoin('p.comments', 'c')
+            ->addSelect('c');
+        }
+        if($withLikes == true){
+            $query->leftJoin('p.likedBy', 'l')
+            ->addSelect('l');
+        }
+        if($withAuthors == true || $withProfiles == true){
+            $query->leftJoin('p.author', 'a')
+            ->addSelect('a');
+        }
+        if($withProfiles == true){
+            $query->leftJoin('a.userProfile', 'up')
+            ->addSelect('up');
+        }
+        
+        return $query->orderBy('p.created', 'DESC');
     }
 }
