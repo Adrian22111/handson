@@ -5,8 +5,11 @@ namespace App\Repository;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\ErrorHandler\Collecting;
 
 /**
  * @extends ServiceEntityRepository<MicroPost>
@@ -99,5 +102,42 @@ class MicroPostRepository extends ServiceEntityRepository
         }
         
         return $query->orderBy('p.created', 'DESC');
+    }
+
+    public function findAllWithMinLikes(int $minLikes): array
+    {
+        $idList = $this->findAllQuery(
+            withLikes: true
+        )->select('p.id')
+            ->groupBy('p.id')
+            ->having('COUNT(l) >= :minLikes')
+            ->setParameter('minLikes', $minLikes)
+            ->getQuery()->getResult(Query::HYDRATE_SCALAR_COLUMN);
+
+        return $this->findAllQuery(            
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true,
+        )->where('p.id in (:idList)')
+        ->setParameter('idList', $idList)
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function findAllByAuthors(
+        Collection|array $authors
+    ): array
+    {
+        return $this->findAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true,
+        )->where('p.author IN (:authors)')
+        ->setParameter(
+            'authors',
+            $authors
+        )->getQuery()->getResult();
     }
 }
