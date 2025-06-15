@@ -93,7 +93,6 @@ final class SettingsProfileController extends AbstractController
                 $profile = $user->getUserProfile() ?? new UserProfile();
                 $profile->setImage($newFileName);
                 $user->setUserProfile($profile);
-
                 $entityManager->persist($user);
                 $entityManager->flush();
 
